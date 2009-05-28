@@ -271,9 +271,9 @@ accounts_dialog_update_account (EmpathyAccountsDialog *dialog,
 
 	accounts_dialog_update_name_label (dialog, account);
 
-	default_focus = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog->settings_widget),"default-focus"));
-	if(default_focus) {
-		gtk_widget_grab_focus(default_focus);
+	default_focus = GTK_WIDGET (g_object_get_data (G_OBJECT (dialog->settings_widget), "default-focus"));
+	if (default_focus) {
+		gtk_widget_grab_focus (default_focus);
 	}
 	g_object_unref (profile);
 }
