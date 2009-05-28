@@ -39,6 +39,11 @@ void       empathy_account_widget_add_forget_button (McAccount   *account,
 						     GtkBuilder  *gui,
 						     const gchar *button,
 						     const gchar *entry);
+
+void	   account_widget_set_default_focus         (GtkBuilder  *gui,
+				 		     GtkWidget *widget,
+				 		     const gchar *entry);
+
 GtkWidget *empathy_account_widget_generic_new       (McAccount   *account);
 GtkWidget *empathy_account_widget_salut_new         (McAccount   *account);
 GtkWidget *empathy_account_widget_msn_new           (McAccount   *account);

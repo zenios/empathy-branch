@@ -209,9 +209,12 @@ account_widget_setup_widget (GtkWidget   *widget,
 		gtk_entry_set_text (GTK_ENTRY (widget), str ? str : "");
 		g_free (str);
 
+		
+
 		if (strstr (param_name, "password")) {
 			gtk_entry_set_visibility (GTK_ENTRY (widget), FALSE);
 		}
+
 
 		g_signal_connect (widget, "focus-out-event",
 				  G_CALLBACK (account_widget_entry_focus_cb),
@@ -251,12 +254,12 @@ account_widget_generic_format_param_name (const gchar *param_name)
 
 		p++;
 	}
-	
 	return str;
 }
 
 static void
 accounts_widget_generic_setup (McAccount *account,
+			       GtkWidget *main_widget,
 			       GtkWidget *table_common_settings,
 			       GtkWidget *table_advanced_settings)
 {
@@ -313,6 +316,9 @@ accounts_widget_generic_setup (McAccount *account,
 			gtk_widget_show (widget);
 
 			widget = gtk_entry_new ();
+			if(strcmp(param->name,"account") == 0) {
+				g_object_set_data (G_OBJECT (main_widget), "default-focus", widget);	
+			}
 			gtk_table_attach (GTK_TABLE (table_settings),
 					  widget,
 					  1, 2,
@@ -385,7 +391,6 @@ accounts_widget_generic_setup (McAccount *account,
 		if (widget) {
 			account_widget_setup_widget (widget, account, param->name);
 		}
-
 		g_free (param_name_formatted);
 	}
 
@@ -418,6 +423,19 @@ account_widget_handle_params_valist (McAccount   *account,
 	}
 }
 
+void
+account_widget_set_default_focus (GtkBuilder  *gui,
+				  GtkWidget *widget,
+				  const gchar *entry)
+{
+	GtkWidget *default_focus_widget;
+	
+	default_focus_widget = GTK_WIDGET (gtk_builder_get_object (gui, entry));
+
+	g_object_set_data (G_OBJECT(widget), "default-focus", default_focus_widget);
+	
+	
+}
 void
 empathy_account_widget_handle_params (McAccount   *account,
 				      GtkBuilder  *gui,
@@ -479,7 +497,7 @@ empathy_account_widget_generic_new (McAccount *account)
 					NULL);
 	g_free (filename);
 
-	accounts_widget_generic_setup (account, table_common_settings, table_advanced_settings);
+	accounts_widget_generic_setup (account,widget,table_common_settings, table_advanced_settings);
 
 	return empathy_builder_unref_and_keep_widget (gui, widget);
 }
@@ -506,6 +524,8 @@ empathy_account_widget_salut_new (McAccount *account)
 			"entry_email", "email",
 			"entry_jid", "jid",
 			NULL);
+
+	account_widget_set_default_focus(gui,widget,"entry_first_name");
 
 	return empathy_builder_unref_and_keep_widget (gui, widget);
 }
@@ -534,6 +554,8 @@ empathy_account_widget_msn_new (McAccount *account)
 	empathy_account_widget_add_forget_button (account, gui,
 						  "button_forget",
 						  "entry_password");
+
+	account_widget_set_default_focus(gui,widget,"entry_id");
 
 	return empathy_builder_unref_and_keep_widget (gui, widget);
 }
@@ -576,6 +598,8 @@ empathy_account_widget_jabber_new (McAccount *account)
 			  G_CALLBACK (account_widget_jabber_ssl_toggled_cb),
 			  spinbutton_port);
 
+	account_widget_set_default_focus(gui,widget,"entry_id");
+
 	return empathy_builder_unref_and_keep_widget (gui, widget);
 }
 
@@ -607,6 +631,8 @@ empathy_account_widget_icq_new (McAccount *account)
 						  "button_forget",
 						  "entry_password");
 
+	account_widget_set_default_focus(gui,widget,"entry_uin");
+
 	return empathy_builder_unref_and_keep_widget (gui, widget);
 }
 
@@ -636,6 +662,8 @@ empathy_account_widget_aim_new (McAccount *account)
 	empathy_account_widget_add_forget_button (account, gui,
 						  "button_forget",
 						  "entry_password");
+
+	account_widget_set_default_focus(gui,widget,"entry_screenname");
 
 	return empathy_builder_unref_and_keep_widget (gui, widget);
 }
@@ -669,6 +697,8 @@ empathy_account_widget_yahoo_new (McAccount *account)
 						  "button_forget",
 						  "entry_password");
 
+	account_widget_set_default_focus(gui,widget,"entry_id");
+
 	return empathy_builder_unref_and_keep_widget (gui, widget);
 }
 
@@ -696,6 +726,8 @@ empathy_account_widget_groupwise_new (McAccount *account)
 	empathy_account_widget_add_forget_button (account, gui,
 						  "button_forget",
 						  "entry_password");
+
+	account_widget_set_default_focus(gui,widget,"entry_id");
 
 	return empathy_builder_unref_and_keep_widget (gui, widget);
 }
